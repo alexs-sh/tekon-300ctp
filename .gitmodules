@@ -1,0 +1,3 @@
+[submodule "tekon-utils"]
+	path = tekon-utils
+	url = https://alexs-sas@bitbucket.org/alexsteam4000/tekon-utils-pub.git

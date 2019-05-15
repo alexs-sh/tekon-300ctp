@@ -1,0 +1,52 @@
+image: debian:9
+pipelines:
+  default:
+    - step:
+        name: debian_x86_64
+        script:
+          - apt update -y && apt install -y ninja-build cmake git gcc g++ 
+
+          - git submodule update --init
+          - cd tekon-utils
+          - mkdir build
+          - cd build
+          - cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_FLAGS_RELEASE="-O3 -DNDEBUG -Wall -Wextra -pedantic -Werror -Wno-unused-parameter -std=c99" -DCMAKE_INSTALL_PREFIX=$(pwd)/output ..
+          - ninja
+          - ninja test
+          - ninja install
+        artifacts:
+          - tekon-utils/build/output
+
+    - step:
+        name: volcano
+        script:
+          - apt update -y && apt install -y ninja-build cmake git gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf
+
+          - git submodule update --init
+          - cd tekon-utils
+          - mkdir build 
+          - cd build
+          - cmake -G "Ninja" -DCMAKE_C_COMPILER=arm-linux-gnueabihf-gcc -DCMAKE_FIND_ROOT_PATH=/usr/arm-linux-gnueabihf -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_FLAGS_RELEASE="-O3 -DNDEBUG  -Wall -Wextra -Wno-unused-parameter -std=c99" -DCMAKE_INSTALL_PREFIX $(pwd)/output ..
+          - ninja
+          - ninja install
+        artifacts:
+          - tekon-utils/build/output
+
+    - step:
+        name: windowsxp_x86
+        script:
+          - apt update && apt install -y ninja-build cmake git gcc-mingw-w64-i686 g++-mingw-w64-i686 build-essential autoconf automake  libtool
+            
+          - git submodule update --init
+          - cd tekon-utils
+          - mkdir build 
+          - cd build
+          - cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_SYSTEM_NAME=Windows -DCMAKE_C_COMPILER=i686-w64-mingw32-gcc -DCMAKE_LINKER=/usr/i686-w64-mingw32/bin/ld  -DCMAKE_C_STANDARD_LIBRARIES="-lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 -lws2_32 -liphlpapi -lpsapi -luserenv" -DCMAKE_C_FLAGS_RELEASE="-O3 -DNDEBUG  -Wall -Wextra -Wno-unused-parameter -std=c99 -DWINVER=0x0501" -DCMAKE_EXE_LINKER_FLAGS="-Wl,-Bstatic -lwinpthread" -DCMAKE_INSTALL_PREFIX $(pwd)/output ..
+          - ninja
+          - ninja install
+        artifacts:
+          - tekon-utils/build/output
+
+options:
+  docker: true
+
