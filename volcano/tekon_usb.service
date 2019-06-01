@@ -1,0 +1,15 @@
+[Unit]
+Description=Tekon: usb support
+Requires=tekon_ramfs.service tekon_master.service
+StopWhenUnneeded=true
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/tekon_usb -d /dev/sda -m /tmp/tekon_master/usb -r /tmp/tekon_master/usb-runtime -s /tmp/tekon_master/arch
+Restart=always
+RestartSec=10
+
+
+[Install]
+WantedBy=tekon.target
+

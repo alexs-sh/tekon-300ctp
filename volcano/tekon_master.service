@@ -1,0 +1,15 @@
+[Unit]
+Description=Tekon: master
+Requires=tekon_ramfs.service
+StopWhenUnneeded=true
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/tekon_master -c /home/volcano/tekon/config -v1
+Restart=always
+RestartSec=10
+User=volcano
+
+[Install]
+WantedBy=tekon.target
+

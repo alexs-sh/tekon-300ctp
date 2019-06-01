@@ -1,0 +1,7 @@
+[Unit]
+Description=Tekon target : contains ramfs mounting, data acquisition, usb support
+Requires=tekon_ramfs.service tekon_master.service tekon_usb.service
+After=ntekon_ramfs.service tekon_master.service tekon_usb.service
+
+[Install]
+WantedBy=multi-user.target

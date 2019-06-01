@@ -23,14 +23,11 @@ pipelines:
           - apt update -y && apt install -y ninja-build cmake git gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf
 
           - git submodule update --init
-          - cd tekon-utils
-          - mkdir build 
-          - cd build
-          - cmake -G "Ninja" -DCMAKE_C_COMPILER=arm-linux-gnueabihf-gcc -DCMAKE_FIND_ROOT_PATH=/usr/arm-linux-gnueabihf -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_FLAGS_RELEASE="-O3 -DNDEBUG  -Wall -Wextra -Wno-unused-parameter -std=c99" -DCMAKE_INSTALL_PREFIX=$(pwd)/../../volcano ..
-          - ninja
-          - ninja install
+          - volcano/build.sh
+
         artifacts:
-          - volcano/**  
+          - volcano.tar.gz
+          - install.sh
 
     - step:
         name: windowsxp_x86

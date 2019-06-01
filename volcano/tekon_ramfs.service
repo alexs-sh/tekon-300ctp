@@ -1,0 +1,10 @@
+[Unit]
+Description=Tekon: mount RAMFS
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash -c "mkdir -p /tmp/tekon_master && mount -t ramfs -o size=32m ramfs /tmp/tekon_master && chown volcano:users /tmp/tekon_master"
+RemainAfterExit=true
+
+[Install]
+WantedBy=tekon.target
