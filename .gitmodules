@@ -1,6 +1,6 @@
 [submodule "tekon-utils"]
 	path = tekon-utils
-	url = https://alexs-sas@bitbucket.org/alexsteam4000/tekon-utils-pub.git
+	url = ../tekon-utils.git
 [submodule "tekon-scripts"]
 	path = tekon-scripts
-	url = https://alexs-sas@bitbucket.org/alexsteam4000/tekon-scripts-pub.git
+	url = ../tekon-scripts.git
