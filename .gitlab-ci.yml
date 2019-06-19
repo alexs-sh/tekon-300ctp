@@ -1,0 +1,67 @@
+stages:
+  - build
+
+debian_x86_64:
+  image: debian:9
+  stage: build
+  script:
+    - sed -i 's/deb.debian.org/mirror.yandex.ru/' /etc/apt/sources.list
+    - sed -i 's/security.debian.org/mirror.yandex.ru/' /etc/apt/sources.list
+    - apt update -y && apt install -y ninja-build cmake git gcc g++ 
+
+    - git submodule update --init
+    - cd tekon-utils
+    - mkdir build
+    - cd build
+    - cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_FLAGS_RELEASE="-O3 -DNDEBUG -Wall -Wextra -pedantic -Werror -Wno-unused-parameter -std=c99" -DCMAKE_INSTALL_PREFIX=$(pwd)/../../debian_x86_64 ..
+    - ninja
+    - ninja test
+    - ninja install
+  artifacts:
+    paths:
+    - debian_x86_64
+    expire_in: 1 day
+  tags:
+    - docker
+
+
+volcano:
+  image: debian:9
+  stage: build
+  script:
+    - sed -i 's/deb.debian.org/mirror.yandex.ru/' /etc/apt/sources.list
+    - sed -i 's/security.debian.org/mirror.yandex.ru/' /etc/apt/sources.list
+    - apt update -y && apt install -y ninja-build cmake git gcc-arm-linux-gnueabihf g++-arm-linux-gnueabihf
+
+    - git submodule update --init
+    - volcano/build.sh
+  artifacts:
+    paths:
+    - volcano.tar.gz
+    - install.sh
+    expire_in: 1 day
+  tags:
+    - docker
+
+
+windowsxp_x86:
+  image: debian:9
+  stage: build
+  script:
+    - sed -i 's/deb.debian.org/mirror.yandex.ru/' /etc/apt/sources.list
+    - sed -i 's/security.debian.org/mirror.yandex.ru/' /etc/apt/sources.list
+    - apt update && apt install -y ninja-build cmake git gcc-mingw-w64-i686 g++-mingw-w64-i686 build-essential autoconf automake  libtool
+            
+    - git submodule update --init
+    - cd tekon-utils
+    - mkdir build 
+    - cd build
+    - cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Release -DCMAKE_SYSTEM_NAME=Windows -DCMAKE_C_COMPILER=i686-w64-mingw32-gcc -DCMAKE_LINKER=/usr/i686-w64-mingw32/bin/ld  -DCMAKE_C_STANDARD_LIBRARIES="-lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 -lws2_32 -liphlpapi -lpsapi -luserenv" -DCMAKE_C_FLAGS_RELEASE="-O3 -DNDEBUG  -Wall -Wextra -Wno-unused-parameter -std=c99 -DWINVER=0x0501" -DCMAKE_EXE_LINKER_FLAGS="-Wl,-Bstatic -lwinpthread" -DCMAKE_INSTALL_PREFIX=$(pwd)/../../windowsxp_x86 ..
+    - ninja
+    - ninja install
+  artifacts:
+    paths:
+    - windowsxp_x86
+    expire_in: 1 day
+  tags:
+    - docker
